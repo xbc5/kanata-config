@@ -16,7 +16,7 @@
 ;; defsrc lists the physical keys this file remaps. Every other key on the
 ;; keyboard behaves as normal.
 (defsrc
-  a   s   d   f   lctl lmet lalt ralt .
+  a   s   d   f   j   k   l   ;   lctl lmet lalt ralt .
 )
 
 ;; Timings
@@ -32,7 +32,7 @@
 ;;
 ;; Each column replaces the defsrc key in the same position:
 ;;
-;;   a   s   d   f   lctl lmet lalt ralt .
+;;   a   s   d   f   j   k   l   ;   lctl lmet lalt ralt .
 ;;
 ;; Each entry is one of:
 ;;   a key name
@@ -43,18 +43,18 @@
 ;; base: enable the home-row mods and disable the left modifiers.
 ;; @agr is AltGr
 (deflayer base
-  @a  @s  @d  @f  XX   XX   XX   @agr .
+  @a  @s  @d  @f  @j  @k  @l  @;  XX   XX   XX   @agr .
 )
 
 ;; nomods: send plain letters while typing fast, so a quick "sa" sends two
 ;; letters instead of Shift+a.
 (deflayer nomods
-  a   s   d   f   XX   XX   XX   @agr .
+  a   s   d   f   j   k   l   ;   XX   XX   XX   @agr .
 )
 
 ;; altgr: replace keys only while right Alt is held.
 (deflayer altgr
-  _   _   _   @af XX   XX   XX   _    @sl
+  _   _   _   @af _   _   _   _   XX   XX   XX   _    @sl
 )
 
 ;; ----- FAST-TYPING GUARD -----------------------------------------------------
@@ -77,6 +77,7 @@
 ;;
 ;; tap: switch to nomods, then switch back to base after 20 ms without input.
 ;; a, s, d, f: tap for the letter and run tap; hold for Ctrl, Shift, Super or Alt.
+;; ;, l, k, j: mirror a, s, d, f on the right hand.
 (defalias
   tap (multi
     (layer-switch nomods)
@@ -87,6 +88,10 @@
   s (tap-hold-release $tap-time $hold-time (multi s @tap) lsft)
   d (tap-hold-release $tap-time $hold-time (multi d @tap) lmet)
   f (tap-hold-release $tap-time $hold-time (multi f @tap) lalt)
+  ; (tap-hold-release $tap-time $hold-time (multi ; @tap) lctl)
+  l (tap-hold-release $tap-time $hold-time (multi l @tap) lsft)
+  k (tap-hold-release $tap-time $hold-time (multi k @tap) lmet)
+  j (tap-hold-release $tap-time $hold-time (multi j @tap) lalt)
 )
 
 ;; ----- ALTGR SYMBOLS ---------------------------------------------------------
