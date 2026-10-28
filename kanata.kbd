@@ -16,7 +16,7 @@
 ;; defsrc lists the physical keys this file remaps. Every other key on the
 ;; keyboard behaves as normal.
 (defsrc
-  a   s   d   f   h   j   k   l   ;   lctl lmet lalt ralt ,   .
+  w   o   a   s   d   f   h   j   k   l   ;   lctl lmet lalt ralt ,   .
 )
 
 ;; Timings
@@ -32,7 +32,7 @@
 ;;
 ;; Each column replaces the defsrc key in the same position:
 ;;
-;;   a   s   d   f   h   j   k   l   ;   lctl lmet lalt ralt ,   .
+;;   w   o   a   s   d   f   h   j   k   l   ;   lctl lmet lalt ralt ,   .
 ;;
 ;; Each entry is one of:
 ;;   a key name
@@ -43,18 +43,18 @@
 ;; base: enable the home-row mods and disable the left modifiers.
 ;; @agr is AltGr
 (deflayer base
-  @a  @s  @d  @f  h   @j  @k  @l  @;  XX   XX   XX   @agr ,   .
+  @w  @o  @a  @s  @d  @f  h   @j  @k  @l  @;  XX   XX   XX   @agr ,   .
 )
 
 ;; nomods: send plain letters while typing fast, so a quick "sa" sends two
-;; letters instead of Shift+a.
+;; letters instead of Ctrl+a.
 (deflayer nomods
-  a   s   d   f   h   j   k   l   ;   XX   XX   XX   @agr ,   .
+  w   o   a   s   d   f   h   j   k   l   ;   XX   XX   XX   @agr ,   .
 )
 
 ;; altgr: replace keys only while right Alt is held.
 (deflayer altgr
-  _   _   _   @af @lt @dn @up @rt _   XX   XX   XX   _    @sl @qm
+  _   _   _   _   _   @af @lt @dn @up @rt _   XX   XX   XX   _    @sl @qm
 )
 
 ;; ----- FAST-TYPING GUARD -----------------------------------------------------
@@ -76,20 +76,23 @@
 ;;       hold-time, or when another key is pressed and released during the hold
 ;;
 ;; tap: switch to nomods, then switch back to base after 20 ms without input.
-;; a, s, d, f: tap for the letter and run tap; hold for Ctrl, Shift, Super or Alt.
-;; ;, l, k, j: mirror a, s, d, f on the right hand.
+;; w, a, s, d, f: tap for the letter and run tap; hold for Ctrl+Alt+Shift,
+;;   Ctrl+Alt, Ctrl, Super or Alt.
+;; o, ;, l, k, j: mirror w, a, s, d, f on the right hand.
 (defalias
   tap (multi
     (layer-switch nomods)
     (on-idle-fakekey to-base tap 20)
   )
 
-  a (tap-hold-release $tap-time $hold-time (multi a @tap) lctl)
-  s (tap-hold-release $tap-time $hold-time (multi s @tap) lsft)
+  w (tap-hold-release $tap-time $hold-time (multi w @tap) (multi lctl lalt lsft))
+  a (tap-hold-release $tap-time $hold-time (multi a @tap) (multi lctl lalt))
+  s (tap-hold-release $tap-time $hold-time (multi s @tap) lctl)
   d (tap-hold-release $tap-time $hold-time (multi d @tap) lmet)
   f (tap-hold-release $tap-time $hold-time (multi f @tap) lalt)
-  ; (tap-hold-release $tap-time $hold-time (multi ; @tap) lctl)
-  l (tap-hold-release $tap-time $hold-time (multi l @tap) lsft)
+  o (tap-hold-release $tap-time $hold-time (multi o @tap) (multi lctl lalt lsft))
+  ; (tap-hold-release $tap-time $hold-time (multi ; @tap) (multi lctl lalt))
+  l (tap-hold-release $tap-time $hold-time (multi l @tap) lctl)
   k (tap-hold-release $tap-time $hold-time (multi k @tap) lmet)
   j (tap-hold-release $tap-time $hold-time (multi j @tap) lalt)
 )
