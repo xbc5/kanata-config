@@ -23,7 +23,7 @@
 ;; Define arbitrary variables used elsewhere.
 (defvar
   tap-time 200
-  hold-time 150
+  hold-time 500
 )
 
 ;; ----- LAYERS ----------------------------------------------------------------
