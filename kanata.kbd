@@ -16,7 +16,7 @@
 ;; defsrc lists the physical keys this file remaps. Every other key on the
 ;; keyboard behaves as normal.
 (defsrc
-  a   s   d   f   j   k   l   ;   lctl lmet lalt ralt .
+  a   s   d   f   h   j   k   l   ;   lctl lmet lalt ralt ,   .
 )
 
 ;; Timings
@@ -32,7 +32,7 @@
 ;;
 ;; Each column replaces the defsrc key in the same position:
 ;;
-;;   a   s   d   f   j   k   l   ;   lctl lmet lalt ralt .
+;;   a   s   d   f   h   j   k   l   ;   lctl lmet lalt ralt ,   .
 ;;
 ;; Each entry is one of:
 ;;   a key name
@@ -43,18 +43,18 @@
 ;; base: enable the home-row mods and disable the left modifiers.
 ;; @agr is AltGr
 (deflayer base
-  @a  @s  @d  @f  @j  @k  @l  @;  XX   XX   XX   @agr .
+  @a  @s  @d  @f  h   @j  @k  @l  @;  XX   XX   XX   @agr ,   .
 )
 
 ;; nomods: send plain letters while typing fast, so a quick "sa" sends two
 ;; letters instead of Shift+a.
 (deflayer nomods
-  a   s   d   f   j   k   l   ;   XX   XX   XX   @agr .
+  a   s   d   f   h   j   k   l   ;   XX   XX   XX   @agr ,   .
 )
 
 ;; altgr: replace keys only while right Alt is held.
 (deflayer altgr
-  _   _   _   @af _   _   _   _   XX   XX   XX   _    @sl
+  _   _   _   @af @lt @dn @up @rt _   XX   XX   XX   _    @sl @qm
 )
 
 ;; ----- FAST-TYPING GUARD -----------------------------------------------------
@@ -94,16 +94,22 @@
   j (tap-hold-release $tap-time $hold-time (multi j @tap) lalt)
 )
 
-;; ----- ALTGR SYMBOLS ---------------------------------------------------------
+;; ----- ALTGR KEYS ------------------------------------------------------------
 ;; Actions used here:
 ;;   (layer-while-held name)   make the named layer active while the key is held
 ;;   (unmod (mods) keys)       release the listed modifiers, then send the keys
 ;;
 ;; agr: hold right Alt and activate the altgr layer.
-;; sl: send / for AltGr+., or ? with Shift.
+;; sl, qm: send / for AltGr+, and ? for AltGr+.
+;; lt, dn, up, rt: send the arrows for AltGr+h, j, k, l.
 ;; af: send left Alt+F for zellij.
 (defalias
   agr (multi ralt (layer-while-held altgr))
   sl (unmod (ralt) /)
+  qm (unmod (ralt) lsft /)
+  lt (unmod (ralt) left)
+  dn (unmod (ralt) down)
+  up (unmod (ralt) up)
+  rt (unmod (ralt) rght)
   af (unmod (ralt) lalt f)
 )
