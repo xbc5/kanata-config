@@ -26,6 +26,14 @@
   hold-time 500
 )
 
+;; Hands
+;; List allowed key combinations for each hand. This prevents mistakes when
+;; rolling over keys with the same hand.
+(defvar
+  left-keys (grv 1 2 3 4 5 tab q w e r t a s d f g z x c v b)
+  right-keys (6 7 8 9 0 min eql y u i o p [ ] \ h j k l ; ' n m , . /)
+)
+
 ;; ----- LAYERS ----------------------------------------------------------------
 ;; Replaces defsrc keys: (deflayer name ...).
 ;; The first layer (base) is active at start.
@@ -71,9 +79,10 @@
 ;;   (multi x y)                      run x and y together
 ;;   (layer-switch name)              make the named layer active
 ;;   (on-idle-fakekey key tap ms)     tap the fake key after ms without input
-;;   (tap-hold-release $tap-time $hold-time tap hold)
+;;   (tap-hold-release-keys $tap-time $hold-time tap hold keys)
 ;;       run tap when the key is tapped, and hold when it is held past
-;;       hold-time, or when another key is pressed and released during the hold
+;;       hold-time, or when another key is pressed and released during the hold;
+;;       run tap at once when one of keys is pressed during the hold
 ;;
 ;; tap: switch to nomods, then switch back to base after 20 ms without input.
 ;; w, a, s, d, f: tap for the letter and run tap; hold for Ctrl+Alt+Shift,
@@ -85,16 +94,16 @@
     (on-idle-fakekey to-base tap 20)
   )
 
-  w (tap-hold-release $tap-time $hold-time (multi w @tap) (multi lctl lalt lsft))
-  a (tap-hold-release $tap-time $hold-time (multi a @tap) (multi lctl lalt))
-  s (tap-hold-release $tap-time $hold-time (multi s @tap) lctl)
-  d (tap-hold-release $tap-time $hold-time (multi d @tap) lmet)
-  f (tap-hold-release $tap-time $hold-time (multi f @tap) lalt)
-  o (tap-hold-release $tap-time $hold-time (multi o @tap) (multi lctl lalt lsft))
-  ; (tap-hold-release $tap-time $hold-time (multi ; @tap) (multi lctl lalt))
-  l (tap-hold-release $tap-time $hold-time (multi l @tap) lctl)
-  k (tap-hold-release $tap-time $hold-time (multi k @tap) lmet)
-  j (tap-hold-release $tap-time $hold-time (multi j @tap) lalt)
+  w (tap-hold-release-keys $tap-time $hold-time (multi w @tap) (multi lctl lalt lsft) $left-keys)
+  a (tap-hold-release-keys $tap-time $hold-time (multi a @tap) (multi lctl lalt) $left-keys)
+  s (tap-hold-release-keys $tap-time $hold-time (multi s @tap) lctl $left-keys)
+  d (tap-hold-release-keys $tap-time $hold-time (multi d @tap) lmet $left-keys)
+  f (tap-hold-release-keys $tap-time $hold-time (multi f @tap) lalt $left-keys)
+  o (tap-hold-release-keys $tap-time $hold-time (multi o @tap) (multi lctl lalt lsft) $right-keys)
+  ; (tap-hold-release-keys $tap-time $hold-time (multi ; @tap) (multi lctl lalt) $right-keys)
+  l (tap-hold-release-keys $tap-time $hold-time (multi l @tap) lctl $right-keys)
+  k (tap-hold-release-keys $tap-time $hold-time (multi k @tap) lmet $right-keys)
+  j (tap-hold-release-keys $tap-time $hold-time (multi j @tap) lalt $right-keys)
 )
 
 ;; ----- ALTGR KEYS ------------------------------------------------------------
