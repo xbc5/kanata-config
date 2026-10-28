@@ -1,0 +1,104 @@
+;; Kanata remaps keys between the keyboard and the system. This file is made of
+;; blocks written as (name ...). Lines starting with ;; are comments.
+;;
+;; Key names used here:
+;;   lctl, lsft, lmet, lalt   left Ctrl, Shift, Super and Alt
+;;   ralt                     right Alt (AltGr)
+
+;; ----- SETTINGS --------------------------------------------------------------
+;; defcfg holds global options.
+;; process-unmapped-keys: pass every key missing from defsrc through unchanged.
+(defcfg
+  process-unmapped-keys yes
+)
+
+;; Remapped keys
+;; defsrc lists the physical keys this file remaps. Every other key on the
+;; keyboard behaves as normal.
+(defsrc
+  a   s   d   f   lctl lmet lalt ralt .
+)
+
+;; Timings
+;; Define arbitrary variables used elsewhere.
+(defvar
+  tap-time 200
+  hold-time 150
+)
+
+;; ----- LAYERS ----------------------------------------------------------------
+;; Replaces defsrc keys: (deflayer name ...).
+;; The first layer (base) is active at start.
+;;
+;; Each column replaces the defsrc key in the same position:
+;;
+;;   a   s   d   f   lctl lmet lalt ralt .
+;;
+;; Each entry is one of:
+;;   a key name
+;;   @name        run the alias called name, defined in a defalias block below
+;;   XX           disable the key
+;;   _            unchanged key; use as-is
+
+;; base: enable the home-row mods and disable the left modifiers.
+;; @agr is AltGr
+(deflayer base
+  @a  @s  @d  @f  XX   XX   XX   @agr .
+)
+
+;; nomods: send plain letters while typing fast, so a quick "sa" sends two
+;; letters instead of Shift+a.
+(deflayer nomods
+  a   s   d   f   XX   XX   XX   @agr .
+)
+
+;; altgr: replace keys only while right Alt is held.
+(deflayer altgr
+  _   _   _   @af XX   XX   XX   _    @sl
+)
+
+;; ----- FAST-TYPING GUARD -----------------------------------------------------
+;; A fake key is an action with no physical key, which other actions press.
+;; to-base: switch back to the base layer.
+(deffakekeys
+  to-base (layer-switch base)
+)
+
+;; ----- HOME-ROW MODS ---------------------------------------------------------
+;; defalias defines aliases. An alias is a named action, used in a layer as @name.
+;;
+;; Actions used here:
+;;   (multi x y)                      run x and y together
+;;   (layer-switch name)              make the named layer active
+;;   (on-idle-fakekey key tap ms)     tap the fake key after ms without input
+;;   (tap-hold-release $tap-time $hold-time tap hold)
+;;       run tap when the key is tapped, and hold when it is held past
+;;       hold-time, or when another key is pressed and released during the hold
+;;
+;; tap: switch to nomods, then switch back to base after 20 ms without input.
+;; a, s, d, f: tap for the letter and run tap; hold for Ctrl, Shift, Super or Alt.
+(defalias
+  tap (multi
+    (layer-switch nomods)
+    (on-idle-fakekey to-base tap 20)
+  )
+
+  a (tap-hold-release $tap-time $hold-time (multi a @tap) lctl)
+  s (tap-hold-release $tap-time $hold-time (multi s @tap) lsft)
+  d (tap-hold-release $tap-time $hold-time (multi d @tap) lmet)
+  f (tap-hold-release $tap-time $hold-time (multi f @tap) lalt)
+)
+
+;; ----- ALTGR SYMBOLS ---------------------------------------------------------
+;; Actions used here:
+;;   (layer-while-held name)   make the named layer active while the key is held
+;;   (unmod (mods) keys)       release the listed modifiers, then send the keys
+;;
+;; agr: hold right Alt and activate the altgr layer.
+;; sl: send / for AltGr+., or ? with Shift.
+;; af: send left Alt+F for zellij.
+(defalias
+  agr (multi ralt (layer-while-held altgr))
+  sl (unmod (ralt) /)
+  af (unmod (ralt) lalt f)
+)
