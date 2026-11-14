@@ -16,7 +16,7 @@
 ;; defsrc lists the physical keys this file remaps. Every other key on the
 ;; keyboard behaves as normal.
 (defsrc
-  w   o   a   s   d   f   h   j   k   l   ;   lctl lmet lalt ralt ,   .
+  q   w   e   i   o   p   a   s   d   f   h   j   k   l   ;   z   x   c   lctl lmet lalt ralt ,   .   m
 )
 
 ;; Timings
@@ -40,7 +40,7 @@
 ;;
 ;; Each column replaces the defsrc key in the same position:
 ;;
-;;   w   o   a   s   d   f   h   j   k   l   ;   lctl lmet lalt ralt ,   .
+;;   q   w   e   i   o   p   a   s   d   f   h   j   k   l   ;   z   x   c   lctl lmet lalt ralt ,   .   m
 ;;
 ;; Each entry is one of:
 ;;   a key name
@@ -51,18 +51,18 @@
 ;; base: enable the home-row mods and disable the left modifiers.
 ;; @agr is AltGr
 (deflayer base
-  @w  @o  @a  @s  @d  @f  h   @j  @k  @l  @;  XX   XX   XX   @agr ,   .
+  @q  @w  @e  @i  @o  @p  @a  @s  @d  @f  h   @j  @k  @l  @;  @z  @x  @c  XX   XX   XX   @agr @cm @dt @m
 )
 
 ;; nomods: send plain letters while typing fast, so a quick "sa" sends two
 ;; letters instead of Ctrl+a.
 (deflayer nomods
-  w   o   a   s   d   f   h   j   k   l   ;   XX   XX   XX   @agr ,   .
+  q   w   e   i   o   p   a   s   d   f   h   j   k   l   ;   z   x   c   XX   XX   XX   @agr ,   .   m
 )
 
 ;; altgr: replace keys only while right Alt is held.
 (deflayer altgr
-  _   _   _   _   _   @af @lt @dn @up @rt _   XX   XX   XX   _    @sl @qm
+  _   _   _   _   _   _   _   _   _   @af @lt @dn @up @rt _   _   _   _   XX   XX   XX   _    @sl @qm _
 )
 
 ;; ----- FAST-TYPING GUARD -----------------------------------------------------
@@ -85,25 +85,38 @@
 ;;       run tap at once when one of keys is pressed during the hold
 ;;
 ;; tap: switch to nomods, then switch back to base after 20 ms without input.
-;; w, a, s, d, f: tap for the letter and run tap; hold for Ctrl+Alt+Shift,
-;;   Ctrl+Alt, Ctrl, Super or Alt.
-;; o, ;, l, k, j: mirror w, a, s, d, f on the right hand.
+;; q, w, e, a, s, d, f: tap for the letter and run tap; hold for Ctrl+Shift,
+;;   Ctrl+Alt+Shift, Alt+Shift, Ctrl+Alt, Ctrl, Super or Alt.
+;; z, x, c: tap for the letter and run tap; hold for Super+Shift, Ctrl+Shift or
+;;   Alt+Shift.
+;; p, o, i, ;, l, k, j: mirror q, w, e, a, s, d, f on the right hand.
+;; m, cm, dt: mirror c, x, z on the right hand with m , and .
 (defalias
   tap (multi
     (layer-switch nomods)
     (on-idle-fakekey to-base tap 20)
   )
 
+  q (tap-hold-release-keys $tap-time $hold-time (multi q @tap) (multi lctl lsft) $left-keys)
   w (tap-hold-release-keys $tap-time $hold-time (multi w @tap) (multi lctl lalt lsft) $left-keys)
+  e (tap-hold-release-keys $tap-time $hold-time (multi e @tap) (multi lalt lsft) $left-keys)
   a (tap-hold-release-keys $tap-time $hold-time (multi a @tap) (multi lctl lalt) $left-keys)
   s (tap-hold-release-keys $tap-time $hold-time (multi s @tap) lctl $left-keys)
   d (tap-hold-release-keys $tap-time $hold-time (multi d @tap) lmet $left-keys)
   f (tap-hold-release-keys $tap-time $hold-time (multi f @tap) lalt $left-keys)
+  z (tap-hold-release-keys $tap-time $hold-time (multi z @tap) (multi lmet lsft) $left-keys)
+  x (tap-hold-release-keys $tap-time $hold-time (multi x @tap) (multi lctl lsft) $left-keys)
+  c (tap-hold-release-keys $tap-time $hold-time (multi c @tap) (multi lalt lsft) $left-keys)
+  p (tap-hold-release-keys $tap-time $hold-time (multi p @tap) (multi lctl lsft) $right-keys)
   o (tap-hold-release-keys $tap-time $hold-time (multi o @tap) (multi lctl lalt lsft) $right-keys)
+  i (tap-hold-release-keys $tap-time $hold-time (multi i @tap) (multi lalt lsft) $right-keys)
   ; (tap-hold-release-keys $tap-time $hold-time (multi ; @tap) (multi lctl lalt) $right-keys)
   l (tap-hold-release-keys $tap-time $hold-time (multi l @tap) lctl $right-keys)
   k (tap-hold-release-keys $tap-time $hold-time (multi k @tap) lmet $right-keys)
   j (tap-hold-release-keys $tap-time $hold-time (multi j @tap) lalt $right-keys)
+  cm (tap-hold-release-keys $tap-time $hold-time (multi , @tap) (multi lctl lsft) $right-keys)
+  dt (tap-hold-release-keys $tap-time $hold-time (multi . @tap) (multi lmet lsft) $right-keys)
+  m (tap-hold-release-keys $tap-time $hold-time (multi m @tap) (multi lalt lsft) $right-keys)
 )
 
 ;; ----- ALTGR KEYS ------------------------------------------------------------
